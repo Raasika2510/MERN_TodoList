@@ -1,7 +1,24 @@
 import React from 'react'
 import "./Usertable.css"
+import { useState, useEffect } from 'react'
+import axios from "axios"
 
 const UserTable = () => {
+    const[taskitems, setTaskItems] = useState([]);
+
+    useEffect(()=>{
+        const fetchdata = async() =>{
+            try{
+                const data = await axios.get("http://localhost:5000/app/gettask")
+                setTaskItems(data.data);
+            }catch(error){
+                console.log(error)
+            }
+        };
+        fetchdata();
+    },[])
+
+
   return (
     <div className='tasktable'>
         <button type="button" class="btn btn-outline-primary">Add Task <br></br>
@@ -18,20 +35,24 @@ const UserTable = () => {
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                <td>1</td>
-                <td>Task 1</td>
-                <td>Sameple category</td>
-                <td>12/12/2024</td>
+                {taskitems.map((taskitem, index) => {
+                    return(
+                        <tr>
+                <td>{index+1}</td>
+                <td>{taskitem.task}</td>
+                <td>{taskitem.category}</td>
+                <td>{taskitem.date}</td>
                 <td className='actionbutton'>
-                <button type="button" class="btn btn-warning">
+                <button type="button" className="btn btn-warning">
                 <i class="fa-regular fa-pen-to-square"></i>
                 </button>
-                <button type="button" class="btn btn-danger">
+                <button type="button" className="btn btn-danger">
                 <i class="fa-solid fa-trash"></i>
                 </button>
                 </td>
                 </tr>
+                    )
+                })}
             </tbody>
         </table>
     </div>
